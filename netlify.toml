@@ -1,0 +1,8 @@
+# WQR — WhatsApp Quick Responder (a product of AI-Suplex Labs)
+#
+# The site is PLAIN STATIC HTML under site/ (index.html + images/).
+# No framework, no build step: publish site/ as-is.
+
+[build]
+  publish = "site"
+  command = ""

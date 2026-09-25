@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WhatsApp Quick Responder (WQR) — by AI-Suplex Labs</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- FAVICON - Add this -->
+  <link rel="icon" type="image/png" sizes="16x16" href="logo-icon(16X16).png">
+  <link rel="icon" type="image/png" sizes="32x32" href="logo-icon(32X32).png">
+  <link rel="icon" type="image/png" sizes="64x64" href="logo-icon(64X64).png">
+  
+  <!-- Apple Touch Icon (for iOS) -->
+  <link rel="apple-touch-icon" href="logo-icon(64X64).png">
+  
+  <!-- Fallback -->
+  <link rel="shortcut icon" href="logo-icon(32X32).png">
+
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #02040a;
+        /* Ultra dark background */
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Subtle Gradients */
+      .bg-glow {
+        background: radial-gradient(
+          circle at 50% 0%,
+          rgba(45, 147, 89, 0.15) 0%,
+          transparent 50%
+        );
+      }
+
+      /* Glassmorphism */
+      .glass-panel {
+        background: rgba(20, 25, 35, 0.6);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      }
+
+      /* 3D Transform for the Dashboard */
+      .hero-dashboard {
+        transform: perspective(1000px) rotateX(2deg) translateY(0);
+        transition: transform 0.5s ease;
+      }
+
+      .hero-dashboard:hover {
+        transform: perspective(1000px) rotateX(0deg) translateY(-5px);
+      }
+
+      /* Initial Load Animations */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-up {
+        animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        opacity: 0;
+        /* Start hidden */
+      }
+
+      /* Scroll Reveal Animations */
+      .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: transform, opacity;
+      }
+
+      .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Stagger Delays */
+      .delay-100 {
+        transition-delay: 0.1s;
+      }
+
+      .delay-200 {
+        transition-delay: 0.2s;
+      }
+
+      .delay-300 {
+        transition-delay: 0.3s;
+      }
+
+      @keyframes pulse-subtle {
+        0%,
+        100% {
+          opacity: 0.5;
+        }
+
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .pulse-dot {
+        animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      /* Hide scrollbar for internal divs */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      /* Gradient Pulse Animation Keyframes */
+      @keyframes gradient-pulse {
+        0% {
+          background-position: 0% 50%;
+        }
+
+        50% {
+          background-position: 100% 50%;
+        }
+
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      /* Green / Yellow Pulse (Works Through Load-Shedding) */
+      .text-gradient-green-yellow {
+        background: linear-gradient(to right, #2d9359, #eab308, #2d9359);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 200% auto;
+        animation: gradient-pulse 3s ease-in-out infinite;
+      }
+
+      /* Yellow / Green Pulse (Never Calls In Sick) */
+      .text-gradient-yellow-green {
+        background: linear-gradient(to right, #eab308, #2d9359, #eab308);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 200% auto;
+        animation: gradient-pulse 3s ease-in-out infinite;
+      }
+
+      /* Blue / Yellow Pulse (Standard/Other) */
+      .text-gradient-blue-yellow {
+        background: linear-gradient(to right, #3b82f6, #eab308, #3b82f6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 200% auto;
+        animation: gradient-pulse 3s ease-in-out infinite;
+      }
+
+      /* Float Animation */
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+
+        50% {
+          transform: translateY(-10px);
+        }
+
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .animate-float-slow {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      .animate-float-delayed {
+        animation: float 7s ease-in-out infinite;
+        animation-delay: 2s;
+      }
+
+      /* Card Hover Effects */
+      .interactive-card {
+        transition: transform 0.3s ease, border-color 0.3s ease,
+          background-color 0.3s ease;
+      }
+
+      .interactive-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255, 255, 255, 0.2);
+        background-color: rgba(255, 255, 255, 0.03);
+      }
+    </style>
+  </head>
+
+  <body
+    class="text-slate-400 overflow-x-hidden selection:bg-[#2D9359] selection:text-white"
+  >
+    <!-- Navbar -->
+    <nav
+      class="fixed top-0 w-full z-50 border-b border-white/5 bg-[#02040A]/80 backdrop-blur-md transition-all duration-300"
+      id="navbar"
+    >
+      <div
+        class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between"
+      >
+        <!-- Logo Section -->
+        <div class="flex items-center gap-3">
+          <!-- Logo Icon -->
+          <img
+            src="images/logo-graphic-only(352X352).png"
+            alt="Logo"
+            class="w-10 h-10 shrink-0 group cursor-pointer hover:scale-110 transition-transform duration-300"
+          />
+          <!-- Logo Text -->
+          <div class="flex flex-col leading-none justify-center">
+            <span class="text-white font-semibold tracking-tight text-sm"
+              >WhatsApp Quick Responder</span
+            >
+            <span
+              class="text-[#EAB308] font-medium text-[10px] tracking-wide uppercase mt-1"
+              >AI-Suplex Labs</span
+            >
+          </div>
+        </div>
+
+        <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+          <a
+            href="#problem"
+            class="hover:text-[#EAB308] transition-colors relative group"
+          >
+            The Problem
+            <span
+              class="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#EAB308] transition-all group-hover:w-full"
+            ></span>
+          </a>
+          <a
+            href="#how-it-works"
+            class="hover:text-[#EAB308] transition-colors relative group"
+          >
+            How It Works
+            <span
+              class="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#EAB308] transition-all group-hover:w-full"
+            ></span>
+          </a>
+          <a
+            href="#pricing"
+            class="hover:text-[#EAB308] transition-colors relative group"
+          >
+            Pricing
+            <span
+              class="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#EAB308] transition-all group-hover:w-full"
+            ></span>
+          </a>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-xs font-medium text-[#2D9359] hidden sm:block"
+            >Founding-5: First Month Free</span
+          >
+          <!-- BUY GROWTH TIER (highlighted) -->
+          <a
+            href="#pricing"
+            target="_blank"
+            class="cta-button cta-primary bg-white text-black text-sm font-medium px-4 py-2 rounded-full hover:bg-[#EAB308] hover:text-black transition-all hover:scale-105 active:scale-95"
+            onclick="gtag('event', 'click', {'event_category': 'CTA', 'event_label': 'Buy Growth'});"
+          >
+            See Plans
+          </a>
+
+          <!-- Fallback WhatsApp -->
+          <noscript>
+            <a
+              href="https://wa.me/263782217266?text=Hi!%20I%20want%20to%20buy%20Growth%20tier%20($59/month).%0A%0ABusiness:%20%0AName:%20%0AWhatsApp:%20"
+              class="cta-button cta-primary"
+            >
+              Buy Growth via WhatsApp
+            </a>
+          </noscript>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="relative pt-36 pb-20 lg:pt-44 lg:pb-32">
+      <!-- Background Glow -->
+      <div
+        class="absolute top-0 left-0 right-0 h-[800px] bg-glow pointer-events-none z-0"
+      ></div>
+
+      <!-- Hero Background Logo Overlay -->
+      <div
+        id="hero-bg-logo"
+        class="absolute top-20 right-0 md:right-10 z-0 opacity-10 pointer-events-none select-none will-change-transform"
+      >
+        <img
+          src="images/logo-graphic-only(352X352).png"
+          alt=""
+          class="w-48 md:w-80 lg:w-96"
+        />
+      </div>
+
+      <div class="relative z-10 max-w-7xl mx-auto px-6 text-center">
+        <!-- Badge (Yellow Accent) -->
+        <div
+          class="animate-fade-up inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-xs font-medium text-yellow-500 mb-8 hover:bg-yellow-500/20 transition-all hover:scale-105 cursor-pointer"
+          style="animation-delay: 0s"
+        >
+          <span class="flex h-2 w-2 relative">
+            <span
+              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"
+            ></span>
+            <span
+              class="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"
+            ></span>
+          </span>
+          <span>Founding-5 — First Month Free · 5 Spots</span>
+        </div>
+
+        <!-- Headline with Pulsing Gradients -->
+        <h1
+          class="animate-fade-up text-4xl md:text-6xl lg:text-7xl font-semibold text-white tracking-tight mb-6 leading-[1.15] mx-auto max-w-6xl"
+          style="animation-delay: 0.1s"
+        >
+          Your WhatsApp Assistant That
+          <span class="text-gradient-green-yellow">Never Sleeps</span>,
+          <span class="text-gradient-yellow-green">Never Calls In Sick</span>,
+          and
+          <span class="text-gradient-green-yellow"
+            >Works Through Load-Shedding</span
+          >
+        </h1>
+
+        <!-- Subtext -->
+        <p
+          class="animate-fade-up text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
+          style="animation-delay: 0.2s"
+        >
+          Zimbabwe's first AI-powered customer service assistant. Built for our
+          unique challenges.
+        </p>
+
+        <!-- Buttons with "See Plans" -->
+        <div
+          class="animate-fade-up flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
+          style="animation-delay: 0.3s"
+        >
+          <!-- START FREE TRIAL -->
+          <a
+            href="https://wa.me/263782217266?text=Hi!%20I%20want%20the%20free%20FAQ%20bot.%0A%0ABusiness:%20%0AName:%20"
+            target="_blank"
+            class="cta-button cta-trial h-12 px-8 rounded-full bg-[#2D9359] hover:bg-[#257d4b] text-white font-medium transition-all shadow-[0_0_40px_-10px_rgba(45,147,89,0.3)] hover:shadow-[0_0_40px_-10px_rgba(45,147,89,0.5)] flex items-center gap-2 hover:-translate-y-1 active:scale-95"
+            onclick="gtag('event', 'click', {'event_category': 'CTA', 'event_label': 'Free Trial'});"
+          >
+            Start Free — FAQ Bot
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+
+          <!-- Fallback WhatsApp -->
+          <noscript>
+            <a
+              href="https://wa.me/263782217266?text=Hi!%20I%20want%20to%20start%20my%2030-day%20FREE%20trial.%0A%0ABusiness:%20%0AName:%20%0AWhatsApp:%20"
+              class="cta-button cta-trial"
+            >
+              Start Trial via WhatsApp
+            </a>
+          </noscript>
+
+          <!-- BUY GROWTH TIER (highlighted) -->
+          <a
+            href="#pricing"
+            target="_blank"
+            class="cta-button cta-primary h-12 px-8 rounded-full bg-transparent border border-white/10 hover:border-[#EAB308] hover:text-[#EAB308] text-white font-medium transition-all flex items-center gap-2 group hover:-translate-y-1 active:scale-95"
+            onclick="gtag('event', 'click', {'event_category': 'CTA', 'event_label': 'Buy Growth'});"
+          >
+            See Plans & Pricing
+            <i
+              data-lucide="zap"
+              class="w-4 h-4 text-[#EAB308] group-hover:fill-[#EAB308]"
+            ></i>
+          </a>
+
+          <!-- Fallback WhatsApp -->
+          <noscript>
+            <a
+              href="https://wa.me/263782217266?text=Hi!%20I%20want%20to%20buy%20Growth%20tier%20($59/month).%0A%0ABusiness:%20%0AName:%20%0AWhatsApp:%20"
+              class="cta-button cta-primary"
+            >
+              Buy Growth via WhatsApp
+            </a>
+          </noscript>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div
+          class="animate-fade-up flex flex-wrap justify-center gap-4 text-xs font-medium text-slate-500 mb-16 uppercase tracking-wider"
+          style="animation-delay: 0.35s"
+        >
+          <span
+            class="flex items-center gap-1 hover:text-white transition-colors"
+            ><i data-lucide="zap" class="w-3 h-3 text-[#EAB308]"></i> 95%+
+            Uptime</span
+          >
+          <span class="hidden sm:inline">•</span>
+          <span
+            class="flex items-center gap-1 hover:text-white transition-colors"
+            ><i data-lucide="clock" class="w-3 h-3 text-[#2D9359]"></i> < 5
+            Second Response</span
+          >
+          <span class="hidden sm:inline">•</span>
+          <span
+            class="flex items-center gap-1 hover:text-white transition-colors"
+            ><i data-lucide="flag" class="w-3 h-3 text-[#EAB308]"></i> Proudly
+            Made in Zimbabwe</span
+          >
+        </div>
+
+        <!-- Dashboard Visualization -->
+        <div
+          class="animate-fade-up relative mx-auto max-w-5xl"
+          style="animation-delay: 0.4s"
+        >
+          <!-- Glow behind dashboard -->
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-[#2D9359]/10 via-[#EAB308]/5 to-transparent blur-3xl -z-10 rounded-[3rem]"
+          ></div>
+
+          <!-- Main App Window -->
+          <div
+            class="hero-dashboard glass-panel rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-[#0B0F19]"
+          >
+            <!-- Window Header -->
+            <div
+              class="h-10 border-b border-white/5 flex items-center px-4 gap-2 bg-[#0A0D14]"
+            >
+              <div class="flex gap-2">
+                <div
+                  class="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50"
+                ></div>
+                <div
+                  class="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50"
+                ></div>
+                <div
+                  class="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"
+                ></div>
+              </div>
+              <div
+                class="ml-auto flex items-center gap-2 text-xs text-slate-500 font-mono"
+              >
+                <i
+                  data-lucide="shield-check"
+                  class="w-3 h-3 text-[#2D9359]"
+                ></i>
+                <span>Secure Connection • Harare Server</span>
+              </div>
+            </div>
+
+            <!-- App Layout -->
+            <div class="flex h-[500px] text-left">
+              <!-- Sidebar -->
+              <div
+                class="w-64 border-r border-white/5 bg-[#080B12] hidden md:flex flex-col"
+              >
+                <div class="p-4 border-b border-white/5">
+                  <div class="relative group/search">
+                    <i
+                      data-lucide="search"
+                      class="absolute left-3 top-2.5 w-4 h-4 text-slate-500 group-focus-within/search:text-[#2D9359] transition-colors"
+                    ></i>
+                    <input
+                      type="text"
+                      placeholder="Search chats..."
+                      class="w-full bg-white/5 border border-white/5 rounded-lg py-2 pl-9 pr-3 text-sm text-slate-300 focus:outline-none focus:border-[#2D9359]/50 transition-all"
+                    />
+                  </div>
+                </div>
+                <div class="flex-1 overflow-y-auto no-scrollbar p-2 space-y-1">
+                  <!-- Active Chat -->
+                  <div
+                    class="p-3 bg-white/5 rounded-lg border border-[#2D9359]/30 cursor-pointer"
+                  >
+                    <div class="flex justify-between mb-1">
+                      <span class="text-sm font-medium text-white"
+                        >Tinashe M.</span
+                      >
+                      <span class="text-xs text-[#EAB308]">Now</span>
+                    </div>
+                    <p class="text-xs text-slate-400 truncate">
+                      Looking for chicken curry...
+                    </p>
+                  </div>
+                  <!-- Other Chats -->
+                  <div
+                    class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition-colors opacity-60 hover:opacity-100"
+                  >
+                    <div class="flex justify-between mb-1">
+                      <span class="text-sm font-medium text-white"
+                        >Blessing K.</span
+                      >
+                      <span class="text-xs text-slate-500">12m</span>
+                    </div>
+                    <p class="text-xs text-slate-400 truncate">
+                      Payment confirmed via EcoCash
+                    </p>
+                  </div>
+                </div>
+                <!-- Status Bar -->
+                <div class="p-4 border-t border-white/5 bg-[#0A0D14]">
+                  <div class="flex items-center gap-2">
+                    <div class="relative">
+                      <div
+                        class="w-2 h-2 rounded-full bg-[#2D9359] pulse-dot"
+                      ></div>
+                      <div
+                        class="absolute inset-0 rounded-full bg-[#2D9359] animate-ping opacity-75"
+                      ></div>
+                    </div>
+                    <span class="text-xs font-medium text-slate-400"
+                      >System Operational</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Main Chat Area -->
+              <div class="flex-1 flex flex-col bg-[#05080F] relative">
+                <!-- Header -->
+                <div
+                  class="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-[#05080F]"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-8 h-8 rounded-full bg-gradient-to-br from-[#2D9359] to-[#EAB308] flex items-center justify-center text-xs text-black font-bold"
+                    >
+                      TM
+                    </div>
+                    <div>
+                      <h3 class="text-sm font-medium text-white">Tinashe M.</h3>
+                      <span class="text-xs text-[#EAB308]"
+                        >Business Customer • Borrowdale</span
+                      >
+                    </div>
+                  </div>
+                  <div class="flex gap-3">
+                    <button
+                      class="p-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition-colors"
+                    >
+                      <i data-lucide="phone" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Messages -->
+                <div
+                  class="flex-1 p-6 space-y-6 overflow-y-auto bg-[radial-gradient(#ffffff03_1px,transparent_1px)] [background-size:16px_16px]"
+                >
+                  <!-- Date Divider -->
+                  <div class="flex justify-center">
+                    <span
+                      class="text-[10px] bg-white/5 px-2 py-1 rounded-full text-slate-500"
+                      >Today</span
+                    >
+                  </div>
+
+                  <!-- User Message -->
+                  <div class="flex gap-3">
+                    <div
+                      class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs text-white font-bold shrink-0 mt-1"
+                    >
+                      TM
+                    </div>
+                    <div class="space-y-1 max-w-[80%]">
+                      <div
+                        class="bg-white/10 rounded-2xl rounded-tl-none px-4 py-2 text-sm text-slate-200"
+                      >
+                        Mhoro! Are you open right now? My power just went out.
+                        🔦
+                      </div>
+                      <span class="text-[10px] text-slate-600 pl-1"
+                        >09:47 PM</span
+                      >
+                    </div>
+                  </div>
+
+                  <!-- AI Response -->
+                  <div class="flex gap-3 flex-row-reverse">
+                    <div
+                      class="w-8 h-8 rounded-full bg-[#2D9359]/20 flex items-center justify-center text-xs text-[#2D9359] font-bold shrink-0 mt-1"
+                    >
+                      AI
+                    </div>
+                    <div class="space-y-1 max-w-[80%]">
+                      <div
+                        class="bg-[#2D9359] rounded-2xl rounded-tr-none px-4 py-2 text-sm text-white shadow-lg shadow-[#2D9359]/10"
+                      >
+                        Mhoro Tinashe! We are closed for visits but I can take
+                        your order online.
+                      </div>
+                      <div
+                        class="bg-[#2D9359] rounded-2xl rounded-tr-none px-4 py-2 text-sm text-white shadow-lg shadow-[#2D9359]/10 mt-1"
+                      >
+                        We have the 100Ah Gel Batteries available for $180. 🔋
+                        Should I create an order?
+                      </div>
+                      <div class="flex items-center gap-1 justify-end pr-1">
+                        <span class="text-[10px] text-slate-400"
+                          >Automated via Quick Responder</span
+                        >
+                        <i
+                          data-lucide="zap"
+                          class="w-3 h-3 text-[#EAB308] fill-[#EAB308]"
+                        ></i>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- User Reply -->
+                  <div class="flex gap-3">
+                    <div
+                      class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs text-white font-bold shrink-0 mt-1"
+                    >
+                      TM
+                    </div>
+                    <div class="space-y-1 max-w-[80%]">
+                      <div
+                        class="bg-white/10 rounded-2xl rounded-tl-none px-4 py-2 text-sm text-slate-200"
+                      >
+                        Yes please. Can I pay with EcoCash?
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="p-4 border-t border-white/5 bg-[#0A0D14]">
+                  <div class="relative">
+                    <input
+                      type="text"
+                      placeholder="AI is typing reply..."
+                      disabled
+                      class="w-full bg-[#05080F] border border-white/10 rounded-xl py-3 pl-4 pr-12 text-sm text-slate-400 opacity-60 cursor-not-allowed"
+                    />
+                    <div
+                      class="absolute right-3 top-3 p-0.5 bg-[#2D9359] rounded text-white opacity-50"
+                    >
+                      <i data-lucide="send" class="w-3 h-3"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Panel (Context) -->
+              <div
+                class="w-72 border-l border-white/5 bg-[#080B12] hidden lg:flex flex-col p-4 gap-4"
+              >
+                <!-- Customer Card -->
+                <div
+                  class="bg-white/5 border border-white/5 rounded-xl p-4 hover:border-white/10 transition-colors"
+                >
+                  <h4
+                    class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3"
+                  >
+                    Customer Profile
+                  </h4>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                      <div class="bg-white/5 p-2 rounded-lg">
+                        <i
+                          data-lucide="shopping-bag"
+                          class="w-4 h-4 text-[#2D9359]"
+                        ></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-slate-500">Total Spend</div>
+                        <div class="text-sm font-medium text-white">
+                          $1,240.00
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Load Shedding Warning -->
+                <div
+                  class="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3 flex items-start gap-3 mt-auto"
+                >
+                  <i
+                    data-lucide="alert-triangle"
+                    class="w-4 h-4 text-[#EAB308] mt-0.5 shrink-0"
+                  ></i>
+                  <div>
+                    <div class="text-xs font-medium text-[#EAB308]">
+                      Load Shedding Alert
+                    </div>
+                    <div class="text-[10px] text-[#EAB308]/70 mt-1">
+                      Stage 2 in Harare. Auto-replies active.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Badge 1 (Left) -->
+          <div
+            class="absolute -left-12 bottom-20 bg-[#1A1F2E] border border-white/10 rounded-xl p-3 shadow-2xl hidden xl:block animate-float-slow hover:scale-105 transition-transform"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center"
+              >
+                <i data-lucide="dollar-sign" class="w-5 h-5 text-green-500"></i>
+              </div>
+              <div>
+                <div class="text-xs text-slate-400">Digital Employee Cost</div>
+                <div class="text-sm font-bold text-white">$59/Month</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Badge 2 (Right) -->
+          <div
+            class="absolute -right-8 top-20 bg-[#1A1F2E] border border-white/10 rounded-xl p-3 shadow-2xl hidden xl:block animate-float-delayed hover:scale-105 transition-transform"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center"
+              >
+                <i data-lucide="languages" class="w-5 h-5 text-[#EAB308]"></i>
+              </div>
+              <div>
+                <div class="text-xs text-slate-400">Language Detected</div>
+                <div class="text-sm font-bold text-white">Shona + English</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- The Problem Section -->
+    <section id="problem" class="py-24 border-y border-white/5 bg-white/[0.02]">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <h2
+          class="reveal text-3xl md:text-4xl font-semibold text-white mb-6 tracking-tight"
+        >
+          Drowning in WhatsApp Messages?
+        </h2>
+        <p class="reveal delay-100 text-slate-400 text-lg mb-12">
+          It's 9:47 PM. The power just cut. Your phone buzzes. A customer wants
+          to know if you have stock. You ignore it. Tomorrow, you find out they
+          bought from your competitor.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-6 text-left">
+          <div
+            class="reveal delay-200 interactive-card p-6 rounded-2xl bg-[#02040A] border border-white/5"
+          >
+            <div class="flex items-center gap-3 mb-3 text-red-400">
+              <i data-lucide="x-circle" class="w-5 h-5"></i>
+              <h3 class="font-medium text-white">The Old Way</h3>
+            </div>
+            <ul class="space-y-3 text-sm text-slate-400">
+              <li>• Lost sales when you can't reply instantly</li>
+              <li>• 3-4 hours wasted daily answering repeats</li>
+              <li>• Phone dies during load-shedding chaos</li>
+            </ul>
+          </div>
+          <div
+            class="reveal delay-300 interactive-card p-6 rounded-2xl bg-[#02040A] border border-[#2D9359]/20 relative overflow-hidden group"
+          >
+            <div
+              class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"
+            >
+              <i
+                data-lucide="check-circle"
+                class="w-24 h-24 text-[#2D9359]"
+              ></i>
+            </div>
+            <div class="flex items-center gap-3 mb-3 text-[#2D9359]">
+              <i data-lucide="check-circle" class="w-5 h-5"></i>
+              <h3 class="font-medium text-white">With Quick Responder</h3>
+            </div>
+            <ul class="space-y-3 text-sm text-slate-300">
+              <li>• AI responds in seconds, 24/7/365</li>
+              <li>• Save 15+ hours weekly for growing business</li>
+              <li>• Works in cloud during Load Shedding</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-24 bg-[#02040A]">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2
+            class="reveal text-3xl font-semibold text-white tracking-tight mb-4"
+          >
+            Launch Your AI Assistant in 3 Days
+          </h2>
+          <p class="reveal delay-100 text-slate-400">
+            Simple process. We handle the technical setup.
+          </p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8 relative">
+          <!-- Connector Line -->
+          <div
+            class="hidden md:block absolute top-12 left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent border-t border-dashed border-white/20"
+          ></div>
+
+          <!-- Step 1 -->
+          <div
+            class="reveal delay-100 relative z-10 text-center group cursor-default"
+          >
+            <div
+              class="w-24 h-24 mx-auto bg-[#0B0F19] border border-white/10 rounded-2xl flex items-center justify-center mb-6 shadow-xl group-hover:border-[#2D9359]/50 group-hover:shadow-green-900/20 group-hover:-translate-y-2 transition-all duration-300"
+            >
+              <span
+                class="text-3xl font-bold text-slate-600 group-hover:text-[#2D9359] transition-colors"
+                >1</span
+              >
+            </div>
+            <h3 class="text-lg font-medium text-white mb-2">Share Info</h3>
+            <p class="text-sm text-slate-400 px-4">
+              You provide FAQs, business hours, and product lists.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div
+            class="reveal delay-200 relative z-10 text-center group cursor-default"
+          >
+            <div
+              class="w-24 h-24 mx-auto bg-[#0B0F19] border border-white/10 rounded-2xl flex items-center justify-center mb-6 shadow-xl group-hover:border-[#EAB308]/50 group-hover:shadow-yellow-900/20 group-hover:-translate-y-2 transition-all duration-300"
+            >
+              <span
+                class="text-3xl font-bold text-slate-600 group-hover:text-[#EAB308] transition-colors"
+                >2</span
+              >
+            </div>
+            <h3 class="text-lg font-medium text-white mb-2">We Configure</h3>
+            <p class="text-sm text-slate-400 px-4">
+              We train the AI, set up keywords, and test everything.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div
+            class="reveal delay-300 relative z-10 text-center group cursor-default"
+          >
+            <div
+              class="w-24 h-24 mx-auto bg-[#0B0F19] border border-white/10 rounded-2xl flex items-center justify-center mb-6 shadow-xl group-hover:border-[#2D9359]/50 group-hover:shadow-green-900/20 group-hover:-translate-y-2 transition-all duration-300"
+            >
+              <span
+                class="text-3xl font-bold text-slate-600 group-hover:text-[#2D9359] transition-colors"
+                >3</span
+              >
+            </div>
+            <h3 class="text-lg font-medium text-white mb-2">Go Live</h3>
+            <p class="text-sm text-slate-400 px-4">
+              AI starts responding instantly. Watch your free time multiply.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section
+      id="pricing"
+      class="py-24 border-t border-white/5 relative overflow-hidden"
+    >
+      <div
+        class="absolute inset-0 bg-[#2D9359]/5 blur-[100px] pointer-events-none"
+      ></div>
+
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-16">
+          <h2
+            class="reveal text-3xl md:text-4xl font-semibold text-white tracking-tight mb-4"
+          >
+            Simple, flat monthly pricing
+          </h2>
+          <p class="reveal delay-100 text-slate-400">
+            No setup fee · No lock-in · Cancel anytime
+          </p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <!-- Starter -->
+          <div class="reveal delay-100 p-8 rounded-3xl bg-[#0B0F19] border border-white/10 hover:border-white/20 transition-all hover:-translate-y-1 flex flex-col">
+            <div class="mb-6">
+              <h3 class="text-xl font-semibold text-white">Starter</h3>
+              <p class="text-sm text-slate-400 mt-1">Small shops</p>
+            </div>
+            <div class="mb-6">
+              <span class="text-4xl font-bold text-white">$29</span>
+              <span class="text-slate-500 ml-2">/ month</span>
+            </div>
+            <ul class="space-y-4 mb-8 flex-1">
+              <li class="flex items-start gap-3 text-sm text-slate-300"><i data-lucide="check" class="w-4 h-4 text-[#2D9359] shrink-0 mt-0.5"></i>Single-item order capture</li>
+              <li class="flex items-start gap-3 text-sm text-slate-300"><i data-lucide="check" class="w-4 h-4 text-[#2D9359] shrink-0 mt-0.5"></i>AI replies + FAQ answers</li>
+              <li class="flex items-start gap-3 text-sm text-slate-300"><i data-lucide="check" class="w-4 h-4 text-[#2D9359] shrink-0 mt-0.5"></i>Quotes + PDF invoices</li>
+              <li class="flex items-start gap-3 text-sm text-slate-300"><i data-lucide="check" class="w-4 h-4 text-[#2D9359] shrink-0 mt-0.5"></i>Paynow payment links</li>
+              <li class="flex items-start gap-3 text-sm text-slate-300"><i data-lucide="check" class="w-4 h-4 text-[#2D9359] shrink-0 mt-0.5"></i>300 conversations / month</li>
+            </ul>
+            <a href="https://wa.me/263782217266?text=Hi!%20I%20want%20the%20Starter%20plan%20($29/month).%0A%0ABusiness:%20%0AName:%20" target="_blank" class="cta-button cta-secondary text-center w-full py-3 rounded-lg border border-white/10 hover:bg-white/5 text-white font-medium transition-colors">Get Starter</a>
+          </div>
+
+          <!-- Growth (highlighted) -->
+          <div class="reveal delay-200 p-8 rounded-3xl bg-[#0B0F19] border border-[#2D9359] relative flex flex-col shadow-[0_0_50px_-20px_rgba(45,147,89,0.3)] hover:-translate-y-1">
+            <div class="absolute top-0 right-0 bg-[#EAB308] text-black text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">Most Popular</div>
+            <div class="mb-6">
+              <h3 class="text-xl font-semibold text-white">Growth ⭐</h3>
+              <p class="text-sm text-slate-400 mt-1">Growing SMEs</p>
+            </div>
+            <div class="mb-6">
+              <span class="text-4xl font-bold text-white">$59</span>
+              <span class="text-slate-500 ml-2">/ month</span>
+            </div>
+            <ul class="space-y-4 mb-8 flex-1">
+              <li class="flex items-start gap-3 text-sm text-white"><i data-lucide="check" class="w-4 h-4 text-[#2D9359] shrink-0 mt-0.5"></i>Everything in Starter, plus:</li>
+              <li class="flex items-start gap-3 text-sm text-slate-300"><i data-lucide="zap" class="w-4 h-4 text-[#EAB308] shrink-0 mt-0.5"></i>Multi-item orders</li>
+              <li class="flex items-start gap-3 text-sm text-slate-300"><i data-lucide="check" class="w-4 h-4 text-[#2D9359] shrink-0 mt-0.5"></i>Live inventory pricing</li>
+              <li class="flex items-start gap-3 text-sm text-slate-300"><i data-lucide="check" class="w-4 h-4 text-[#2D9359] shrink-0 mt-0.5"></i>1,500 conversations / month</li>
+              <li class="flex items-start gap-3 text-sm text-slate-300"><i data-lucide="check" class="w-4 h-4 text-[#2D9359] shrink-0 mt-0.5"></i>Email support 24h</li>
+            </ul>
+            <a href="https://wa.me/263782217266?text=Hi!%20I%20want%20the%20Growth%20plan%20($59/month).%0A%0ABusiness:%20%0AName:%20" target="_blank" class="cta-button cta-primary text-center w-full py-3 rounded-lg bg-[#2D9359] hover:bg-[#257d4b] text-white font-medium transition-all">Get Growth — $59/month</a>
+          </div>
+
+          <!-- Pro -->
+          <div class="reveal delay-300 p-8 rounded-3xl bg-[#0B0F19] border border-white/10 hover:border-white/20 transition-all hover:-translate-y-1 flex flex-col">
+            <div class="mb-6">
+              <h3 class="text-xl font-semibold text-white">Pro</h3>
+              <p class="text-sm text-slate-400 mt-1">High volume</p>
+            </div>
+            <div class="mb-6">
+              <span class="text-4xl font-bold text-white">$129</span>
+              <span class="text-slate-500 ml-2">/ month</span>
+            </div>
+            <ul class="space-y-4 mb-8 flex-1">
+              <li class="flex items-start gap-3 text-sm text-slate-300"><i data-lucide="check" class="w-4 h-4 text-[#2D9359] shrink-0 mt-0.5"></i>Everything in Growth, plus:</li>
+              <li class="flex items-start gap-3 text-sm text-slate-300"><i data-lucide="check" class="w-4 h-4 text-[#2D9359] shrink-0 mt-0.5"></i>5,000 conversations / month</li>
+              <li class="flex items-start gap-3 text-sm text-slate-300"><i data-lucide="check" class="w-4 h-4 text-[#2D9359] shrink-0 mt-0.5"></i>Multi-location support</li>
+              <li class="flex items-start gap-3 text-sm text-slate-300"><i data-lucide="check" class="w-4 h-4 text-[#2D9359] shrink-0 mt-0.5"></i>Priority support 4h</li>
+            </ul>
+            <a href="https://wa.me/263782217266?text=Hi!%20I%20want%20the%20Pro%20plan%20($129/month).%0A%0ABusiness:%20%0AName:%20" target="_blank" class="cta-button cta-secondary text-center w-full py-3 rounded-lg border border-white/10 hover:bg-white/5 text-white font-medium transition-colors">Get Pro</a>
+          </div>
+        </div>
+
+        <!-- Free FAQ tier -->
+        <div class="reveal max-w-3xl mx-auto mt-12 p-8 rounded-3xl bg-[#0B0F19] border border-white/10 text-center">
+          <h3 class="text-xl font-semibold text-white mb-2">Start free — the FAQ Bot</h3>
+          <p class="text-slate-400 mb-4">$0, forever. <span class="text-[#EAB308]">faq:address</span> · <span class="text-[#EAB308]">faq:hours</span> · <span class="text-[#EAB308]">faq:payments</span> → instant predefined answers, no AI required.</p>
+          <a href="https://wa.me/263782217266?text=Hi!%20I%20want%20the%20free%20FAQ%20bot.%0A%0ABusiness:%20%0AName:%20" target="_blank" class="cta-button cta-trial inline-block px-8 py-3 rounded-full border border-white/10 hover:bg-white/5 text-white font-medium">Set Up the FAQ Bot — Free</a>
+        </div>
+
+        <!-- Founding-5 -->
+        <div class="reveal max-w-3xl mx-auto mt-6 p-8 rounded-3xl bg-yellow-500/5 border border-yellow-500/20 text-center">
+          <h3 class="text-xl font-semibold text-white mb-2">🎁 Founding-5</h3>
+          <p class="text-slate-300 mb-4">Our first 5 clients: <strong class="text-white">first month FREE</strong>, then Growth at <strong class="text-white">$29/month locked for 12 months</strong> — in exchange for a testimonial, a case study and two referrals.</p>
+          <a href="https://wa.me/263782217266?text=Hi!%20I%20want%20a%20Founding-5%20spot.%0A%0ABusiness:%20%0AName:%20" target="_blank" class="cta-button cta-primary inline-block px-8 py-3 rounded-full bg-[#2D9359] hover:bg-[#257d4b] text-white font-medium">Claim a Founding-5 Spot</a>
+        </div>
+      </div>
+    </section>
+    <!-- Final CTA -->
+    <section class="py-24 border-t border-white/5 relative overflow-hidden">
+      <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+        <div
+          class="reveal inline-block p-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 mb-6"
+        >
+          <div class="text-xs font-medium text-[#EAB308] px-3 py-1">
+            🎁 Founding-5 — only 5 spots available
+          </div>
+        </div>
+        <h2
+          class="reveal delay-100 text-4xl md:text-5xl font-semibold text-white tracking-tight mb-6"
+        >
+          Ready to Stop Missing Customers?
+        </h2>
+        <p
+          class="reveal delay-200 text-slate-400 text-lg mb-10 max-w-2xl mx-auto"
+        >
+          Join the Founding-5 — first month free, then Growth locked at $29/month for 12 months. Save
+          15+ hours weekly and never miss a sale again.
+        </p>
+        <div
+          class="reveal delay-300 flex flex-col sm:flex-row items-center justify-center gap-4"
+        >
+          <!-- BUY GROWTH TIER (highlighted) -->
+          <a
+            href="#pricing"
+            target="_blank"
+            style="align-content: space-evenly;"
+            class="cta-button cta-primary h-14 px-8 rounded-full bg-white text-black font-semibold hover:bg-[#EAB308] transition-all hover:-translate-y-1 w-full sm:w-auto"
+            onclick="gtag('event', 'click', {'event_category': 'CTA', 'event_label': 'Buy Growth'});"
+          >
+            Get Growth — $59/month ⭐
+          </a>
+
+          <!-- Fallback WhatsApp -->
+          <noscript>
+            <a
+              href="https://wa.me/263782217266?text=Hi!%20I%20want%20to%20buy%20Growth%20tier%20($59/month).%0A%0ABusiness:%20%0AName:%20%0AWhatsApp:%20"
+              class="cta-button cta-primary"
+            >
+              Buy Growth via WhatsApp
+            </a>
+          </noscript>
+
+          <!-- BOOK DEMO -->
+          <a
+            href="https://tally.so/r/yPMavp"
+            target="_blank"
+            style="align-content: space-evenly;"
+            class="cta-button cta-demo h-14 px-8 rounded-full bg-transparent border border-white/10 text-white font-medium hover:bg-white/5 transition-all hover:-translate-y-1 w-full sm:w-auto"
+            onclick="gtag('event', 'click', {'event_category': 'CTA', 'event_label': 'Book Demo'});"
+          >
+            Book a 15-Minute Demo
+          </a>
+
+          <!-- Fallback WhatsApp -->
+          <noscript>
+            <a
+              href="https://wa.me/263782217266?text=Hi!%20I%20want%20to%20book%20a%20demo%20of%20WhatsApp%20Quick%20Responder.%0A%0ABusiness:%20%0APreferred%20Date/Time:%20"
+              class="cta-button cta-demo"
+            >
+              Book Demo via WhatsApp
+            </a>
+          </noscript>
+        </div>
+        <p class="reveal delay-300 mt-6 text-xs text-slate-500">
+          P.S. Every day you wait is a day your competitors get ahead.
+        </p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 bg-[#02040A] pt-16 pb-8">
+      <div class="max-w-7xl mx-auto px-6">
+        <div
+          class="flex flex-col md:flex-row justify-between items-start gap-8 mb-12"
+        >
+          <div>
+            <!-- Updated Logo in Footer -->
+            <div class="flex items-center gap-3 mb-4">
+              <img
+                src="images/logo-graphic-only(352X352).png"
+                alt="Logo"
+                class="w-8 h-8 shrink-0"
+              />
+              <div class="flex flex-col leading-none justify-center">
+                <span class="text-white font-semibold tracking-tight text-sm"
+                  >WhatsApp Quick Responder</span
+                >
+                <span
+                  class="text-[#EAB308] font-medium text-[10px] tracking-wide uppercase mt-0.5"
+                  >AI-Suplex Labs</span
+                >
+              </div>
+            </div>
+
+            <p class="text-slate-500 text-sm">
+              WQR is a product of <a href="https://ai-suplex.co.zw" target="_blank" class="text-slate-400 hover:text-white">AI-Suplex Labs</a>.<br />Harare, Zimbabwe 🇿🇼
+            </p>
+          </div>
+          <div class="flex gap-12 text-sm text-slate-400">
+            <div class="flex flex-col gap-3">
+              <a href="#how-it-works" class="hover:text-white transition-colors"
+                >Features</a
+              >
+              <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+            </div>
+            <div class="flex flex-col gap-3">
+              <a href="https://ai-suplex.co.zw/terms.html" target="_blank" class="hover:text-white transition-colors">Terms</a>
+              <a href="https://ai-suplex.co.zw/contact.html" target="_blank" class="hover:text-white transition-colors">Contact</a>
+            </div>
+          </div>
+        </div>
+        <div
+          class="border-t border-white/5 pt-8 text-center text-xs text-slate-600"
+        >
+          &copy; 2026 AI-Suplex Labs. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      lucide.createIcons();
+
+      // Intersection Observer for Scroll Animations
+      const observerOptions = {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.1,
+      };
+
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+            observer.unobserve(entry.target); // Only animate once
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll(".reveal").forEach((el) => {
+        observer.observe(el);
+      });
+
+      // Parallax Effect for Hero Logo
+      const heroLogo = document.getElementById("hero-bg-logo");
+      if (heroLogo) {
+        window.addEventListener("scroll", () => {
+          const scrollPosition = window.scrollY;
+          // Move the logo slower than the scroll speed (parallax effect)
+          heroLogo.style.transform = `translateY(${scrollPosition * 0.2}px)`;
+        });
+      }
+    </script>
+  </body>
+</html>

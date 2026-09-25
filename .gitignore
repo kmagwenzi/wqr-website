@@ -1,0 +1,8 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.log
+
+# Internal build docs — never publish (PRD, copy, brand, pricing, ICP, bio)
+/0_START_HERE.md
+/0[1-8]_*.md
